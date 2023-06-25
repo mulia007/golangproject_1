@@ -6,12 +6,15 @@ import (
 )
 
 func main() {
-	var T, r float64
-	fmt.Print("Masukkan tinggi tabung (T): ")
-	fmt.Scanln(&T)
-	fmt.Print("Masukkan jari-jari tabung (r): ")
+	var r, t float64
+	fmt.Print("jari-jari tabung: 4. ")
 	fmt.Scanln(&r)
+	fmt.Print("tinggi tabung: 20. ")
+	fmt.Scanln(&t)
 
-	luasPermukaan := 2 * math.Pi * r * (r + T)
-	fmt.Printf("Luas permukaan tabung adalah: %.3f\n", luasPermukaan)
+	luasAlas := math.Pi * math.Pow(r, 2)
+	luasSelimut := 2 * math.Pi * 4 * 20
+	luasPermukaan := luasAlas + luasSelimut
+
+	fmt.Println("Luas permukaan tabung adalah:", luasPermukaan)
 }
