@@ -8,28 +8,50 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func GetUsersController(c echo.Context) error {
-	var users []model.User
+func GetUserController(c echo.Context) error {
+	var users []model.Users
 
-	if err := config.DB.Find(&users).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	err := config.DB.Find(&users).Error
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": err.Error(),
+		})
 	}
+
+	// get Id from JWT
+	// myUserId := middleware.ExtractTokenUserId(c)
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success get all users",
+		"message": "success",
 		"data":    users,
 	})
 }
 
 func CreateUserController(c echo.Context) error {
 
-	user := model.User{}
+	user := model.Users{}
 	c.Bind(&user)
 
-	if err := config.DB.Save(&user).Error; err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	err := config.DB.Save(&user).Error
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": err.Error(),
+		})
 	}
-	return c.JSON(http.StatusCreated, map[string]interface{}{
-		"message": "success create new user",
+
+	token, err := middleware.CreateToken(int(user.ID), user.Name)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "Fail create JWT TOken",
+			"status":  err.Error(),
+		})
+	}
+
+	user.Token = token
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"message": "success create user",
 		"user":    user,
 	})
 }
