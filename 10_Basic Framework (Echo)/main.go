@@ -104,7 +104,7 @@ func UpdateUserController(c echo.Context) error {
 	})
 }
 
-// create new user
+// create new users
 func CreateUserController(c echo.Context) error {
 	// binding data
 	user := User{}
